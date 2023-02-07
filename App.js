@@ -1,21 +1,23 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { useEffect, useState } from 'react';
 import { Col, Grid } from 'react-native-easy-grid';
+import Styles from './styles/styles';
+
 
 
 
 export default function App() {
 
+  const SKILLS = ['Frontend', 'Backend', 'Mobile', 'Databases'];
+  const MIN = 0;
+  const MAX = 5;
 
 const [value, setValue] = useState(0);
 const [values, setValues] = useState(new Array(SKILLS.length).fill(0));
 const [ average, setAverage] = useState(0);
 
-const SKILLS = ['Frontend', 'Backend', 'Mobile', 'Databases']
-const MIN = 0;
-const MAX = 5;
 
 const setSkillValue = (val, i) => {
   let skillValues = [...values];
@@ -33,28 +35,42 @@ useEffect(() => {
   calculateAverageSkill();
 }, [values]);
 
+const items = [];
+for (let i = 0; i < SKILLS.length; i++) {
+  items.push(
+    <View key={'item' + i} style={styles.skills}>
+      <Text style={styles.skill}>{SKILLS[i]}</Text>
+      <Text style={styles.value}>Skill: {values[i]}</Text>
+      <Grid style= {styles.grid}>
+        <Col size={5}><Text>{MIN}</Text></Col>
+        <Col size={90}>
+          <Slider
+          style={styles.slider}
+          minimumValue={MIN}
+          maximumValue={MAX}
+          step={1}
+          values={values[i]}
+          minimumTrackTintColor='#006666'
+          maximumTrackTintColor='#ff9900'
+          onValueChange={(val) => setSkillValue(val, i)}/>
+        </Col>
+        <Col size={5}><Text>{MAX}</Text></Col>
+      </Grid>
+    </View>
+  )
+}
+
   return (
-    <View style={styles.container}>
-      <Text>Value: {value}</Text>
-      <Slider
-        style={{width: 200, height: 40}}
-        minimumValue={0}
-        maximumValue={10}
-        step={1}
-        value={value}
-        minimumTrackTintColor='#FFFFFF'
-        maximumTrackTintColor='#000000'
-        onValueChange={(val) => setValue(val)}
-      />
-      </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+      <Text style={styles.header}>Skill set</Text>
+      <View>{items}</View>
+      <Text style={styles.averageHeader}>Average</Text>
+      <Text style={styles.averageValue}>{average}</Text>
+      </ScrollView>
+      </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
+
