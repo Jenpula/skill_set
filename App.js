@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import Slider from '@react-native-community/slider';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Col, Grid } from 'react-native-easy-grid';
 
 
@@ -17,6 +17,21 @@ const SKILLS = ['Frontend', 'Backend', 'Mobile', 'Databases']
 const MIN = 0;
 const MAX = 5;
 
+const setSkillValue = (val, i) => {
+  let skillValues = [...values];
+  skillValues[i] = val;
+  setValues(skillValues);
+}
+
+const calculateAverageSkill = () => {
+  const sum = values.reduce((a, b) => a + b, 0);
+  const avg = (sum / values.length) || 0;
+  setAverage(avg);
+}
+
+useEffect(() => {
+  calculateAverageSkill();
+}, [values]);
 
   return (
     <View style={styles.container}>
